@@ -10,4 +10,5 @@ import lombok.Data;
 public class ErroDto {
 	private String erro;
 	private List<Erro> validacoes;
+	
 }

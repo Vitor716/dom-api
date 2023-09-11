@@ -54,7 +54,7 @@ public class ErrorController {
 		}
 
 		ErroDto erroDto = new ErroDto();
-		erroDto.setErro("Erro de Validação");
+		erroDto.setErro(HttpStatus.BAD_REQUEST.name());
 		erroDto.setValidacoes(validacoes);
 
 		return erroDto;
@@ -73,7 +73,7 @@ public class ErrorController {
 		}
 
 		ErroDto erroDto = new ErroDto();
-		erroDto.setErro("Erro de Validação");
+		erroDto.setErro(HttpStatus.BAD_REQUEST.name());
 		erroDto.setValidacoes(validacoes);
 
 		return erroDto;

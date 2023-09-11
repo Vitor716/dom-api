@@ -12,4 +12,9 @@ public class ErroDeNegocioException extends RuntimeException{
 	
 	private final HttpStatus httpStatus; 
 	private final String erro;
+	
+	public ErroDeNegocioException (TabelaDeErros tabela) {
+		this.httpStatus = tabela.getHttpStatus();
+		this.erro = tabela.getErro();
+	}
 }
