@@ -1,4 +1,5 @@
 package com.example.demo.dtos.produto;
+import com.example.demo.dtos.categoria.CategoriaSaidaDto;
 import com.example.demo.model.Categoria;
 
 import jakarta.persistence.JoinColumn;
@@ -15,5 +16,5 @@ public class ProdutoSaidaDto {
 	private Integer quantidade;
 	private String imagem;
 	private Integer min_quantidade;
-	private Categoria categoria;
+	private CategoriaSaidaDto categoria;
 }

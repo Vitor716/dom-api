@@ -15,5 +15,5 @@ public class ProdutoEntradaDto {
 	private Integer quantidade;
 	private String imagem;
 	private Integer min_quantidade;
-	private Categoria categoria;
+	private Integer idCategoria;
 }
