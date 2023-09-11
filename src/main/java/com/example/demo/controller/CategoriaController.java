@@ -29,14 +29,14 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("v1/categoria")
 public class CategoriaController {
 	@Autowired
-	private CategoriaService categoryService;
+	private CategoriaService categoriaService;
 	
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@PostMapping
-	public CategoriaSaidaDto criar(@Valid @RequestBody CategoriaEntradaDto categoryEntradaDto) {
-		log.info("saldar : {}", categoryEntradaDto);
+	public CategoriaSaidaDto criar(@Valid @RequestBody CategoriaEntradaDto categoriaEntradaDto) {
+		log.info("salvar : {}", categoriaEntradaDto);
 		
-		return categoryService.criar(categoryEntradaDto);
+		return categoriaService.criar(categoriaEntradaDto);
 	}
 	
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -44,9 +44,9 @@ public class CategoriaController {
 	public void editar(
 			@Positive(message = "O ID não pode ser negativo ou zero") 
 			@PathVariable Integer id,
-			@Valid @RequestBody CategoriaEntradaDto categoryEntradaDto) {
+			@Valid @RequestBody CategoriaEntradaDto categoriaEntradaDto) {
 		
-			categoryService.editar(id, categoryEntradaDto);
+			categoriaService.editar(id, categoriaEntradaDto);
 	}
 	
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -55,7 +55,7 @@ public class CategoriaController {
 			@Positive(message = "O ID não pode ser negativo ou zero") 
 			@PathVariable Integer id) {
 		
-			categoryService.excluir(id);
+			categoriaService.excluir(id);
 	}
 	
 	@GetMapping("id/{id}")
@@ -63,11 +63,11 @@ public class CategoriaController {
 			@Positive(message = "O ID não pode ser negativo ou zero") 
 			@PathVariable Integer id) {
 		
-			return categoryService.pegarUm(id);
+			return categoriaService.pegarUm(id);
 	}
 	
 	@GetMapping
 	public List<CategoriaSaidaDto> pegarTodos() {
-			return categoryService.pegarTodos();
+			return categoriaService.pegarTodos();
 	}
 }

@@ -12,77 +12,76 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dtos.categoria.CategoriaEntradaDto;
 import com.example.demo.dtos.categoria.CategoriaSaidaDto;
 import com.example.demo.exception.ErroDeNegocioException;
+import com.example.demo.exception.TabelaDeErros;
 import com.example.demo.model.Categoria;
 import com.example.demo.repository.CategoriaRepository;
+import com.example.demo.validator.CategoriaValidator;
 
 @Service
 public class CategoriaService {
 	@Autowired
-	private CategoriaRepository categoryRepository;
-	
+	private CategoriaRepository categoriaRepository;
+
 	@Autowired
 	private ModelMapper mapper;
-	
-	public CategoriaSaidaDto criar(CategoriaEntradaDto categoryEntradaDto) {
-		Categoria category = mapper.map(categoryEntradaDto, Categoria.class);
-		
-		
-		if(categoryRepository.existsByNome(categoryEntradaDto.getNome())){
-			throw new ErroDeNegocioException(HttpStatus.BAD_REQUEST, "Categoria já utilizada");
-		}
-		
-		Categoria registroCategoryBanco = categoryRepository.save(category);
-		
-		CategoriaSaidaDto categorySaidaDto = mapper.map(registroCategoryBanco, CategoriaSaidaDto.class);
-		
-		return categorySaidaDto; 
+
+	@Autowired
+	private CategoriaValidator categoriaValidator;
+
+	public CategoriaSaidaDto criar(CategoriaEntradaDto categoriaEntradaDto) {
+		Categoria categoria = mapper.map(categoriaEntradaDto, Categoria.class);
+
+		categoriaValidator.criar(categoriaEntradaDto);
+
+		Categoria registroCategoriaBanco = categoriaRepository.save(categoria);
+
+		CategoriaSaidaDto categoriaSaidaDto = mapper.map(registroCategoriaBanco, CategoriaSaidaDto.class);
+
+		return categoriaSaidaDto;
 	}
-	
-	public void editar(Integer id, CategoriaEntradaDto categoryEntradaDto) {
-		Optional<Categoria> optional = categoryRepository.findById(id);
-		
-		if(!optional.isPresent()) {
-			throw new ErroDeNegocioException(HttpStatus.NOT_FOUND, "Categoria não encontrada");
+
+	public void editar(Integer id, CategoriaEntradaDto categoriaEntradaDto) {
+		Optional<Categoria> optional = categoriaRepository.findById(id);
+
+		if (!optional.isPresent()) {
+			throw new ErroDeNegocioException(TabelaDeErros.CATEGORIA_NAO_ENCONTRADA);
 		}
+
+		Categoria registroCategoriaBanco = optional.get();
+
+		categoriaValidator.editar(id, categoriaEntradaDto);
 		
-		Categoria registroCategoryBanco = optional.get();
-		
-		if(categoryRepository.existsByNomeAndIdNot(categoryEntradaDto.getNome(), id)){
-			throw new ErroDeNegocioException(HttpStatus.BAD_REQUEST, "Categoria já em uso");
-		}
-		
-		mapper.map(categoryEntradaDto, registroCategoryBanco);
-		
-		categoryRepository.save(registroCategoryBanco);
+		mapper.map(categoriaEntradaDto, registroCategoriaBanco);
+
+		categoriaRepository.save(registroCategoriaBanco);
 	}
-	
+
 	public void excluir(Integer id) {
-		if(!categoryRepository.existsById(id)) {
-			throw new ErroDeNegocioException(HttpStatus.NOT_FOUND, "Categoria não encontrada");
-		}
-		categoryRepository.deleteById(id);
+		categoriaValidator.excluir(id);
+		
+		categoriaRepository.deleteById(id);
 	}
-	
+
 	public CategoriaSaidaDto pegarUm(Integer id) {
-		Optional<Categoria> optional = categoryRepository.findById(id);
-		
-		if(!optional.isPresent()) {
-			throw new ErroDeNegocioException(HttpStatus.NOT_FOUND, "Categoria não encontrada");
+		Optional<Categoria> optional = categoriaRepository.findById(id);
+
+		if (!optional.isPresent()) {
+			throw new ErroDeNegocioException(TabelaDeErros.CATEGORIA_NAO_ENCONTRADA);
 		}
-		
-		Categoria registroCategoryBanco = optional.get();
-		
-		CategoriaSaidaDto categorySaidaDto = mapper.map(registroCategoryBanco, CategoriaSaidaDto.class);
-		
-		return categorySaidaDto;
+
+		Categoria registroCategoriaBanco = optional.get();
+
+		CategoriaSaidaDto categoriaSaidaDto = mapper.map(registroCategoriaBanco, CategoriaSaidaDto.class);
+
+		return categoriaSaidaDto;
 	}
-	
+
 	public List<CategoriaSaidaDto> pegarTodos() {
-		List<Categoria> categorias = categoryRepository.findAll();
-		
-		List<CategoriaSaidaDto> categorySaidaDto = mapper.map(categorias, new TypeToken<List<CategoriaSaidaDto>> () {
+		List<Categoria> categorias = categoriaRepository.findAll();
+
+		List<CategoriaSaidaDto> categoriaSaidaDto = mapper.map(categorias, new TypeToken<List<CategoriaSaidaDto>>() {
 		}.getType());
-		
-		return categorySaidaDto;
+
+		return categoriaSaidaDto;
 	}
 }
