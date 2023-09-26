@@ -1,9 +1,5 @@
 package com.example.demo.dtos.produto;
 
-import com.example.demo.model.Categoria;
-
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
