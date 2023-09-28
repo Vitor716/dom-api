@@ -7,4 +7,7 @@ import com.example.demo.model.Produto;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
+	boolean existsByNome(String nome);
+	
+	boolean existsByNomeAndIdNot(String nome, Integer id);
 }

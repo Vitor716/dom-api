@@ -58,10 +58,10 @@ public class ProdutoController {
 		return produtoService.listar();
 	}
 
-	@GetMapping("grafico")
-	public void gerarGrafico(HttpServletResponse reponse) throws IOException{
-		produtoService.gerarGrafico(reponse);
-	}
+//	@GetMapping("grafico")
+//	public void gerarGrafico(HttpServletResponse reponse) throws IOException{
+//		produtoService.gerarGrafico(reponse);
+//	}
 	
 	@DeleteMapping
 	public void excluir(Integer id) {

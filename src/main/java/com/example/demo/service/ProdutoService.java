@@ -39,6 +39,7 @@ public class ProdutoService {
 	@Transactional
 	public ProdutoSaidaDto criar(ProdutoEntradaDto produtoEntradaDto) {
 		try {
+			produtoValidator.criar(produtoEntradaDto);
 			Produto produto = mapper.map(produtoEntradaDto, Produto.class);
 
 			if (produtoEntradaDto.getIdCategoria() != null) {
@@ -73,17 +74,34 @@ public class ProdutoService {
 
 	public void editar(Integer id, ProdutoEntradaDto produtoEntradaDto) {
 		try {
+			produtoValidator.editar(id, produtoEntradaDto);
+
 			Optional<Produto> optional = produtoRepository.findById(id);
 
 			if (!optional.isPresent()) {
 				throw new ErroDeNegocioException(TabelaDeErros.PRODUTO_NAO_ENCONTRADO);
 			}
 
-			Produto registroProdutoBanco = optional.get();
+			Produto produto = optional.get();
 
-			mapper.map(produtoEntradaDto, registroProdutoBanco);
+			if (produtoEntradaDto.getIdCategoria() != null) {
+				Optional<Categoria> optionalCategoria = categoriaRepository
+						.findById(produtoEntradaDto.getIdCategoria());
 
-			produtoRepository.save(registroProdutoBanco);
+				if (!optionalCategoria.isPresent()) {
+					log.error("editar, categoria não encontrado: id={}", produtoEntradaDto.getIdCategoria());
+					throw new ErroDeNegocioException(TabelaDeErros.CATEGORIA_NAO_ENCONTRADA);
+				}
+
+				Categoria categoria = optionalCategoria.get();
+				produto.setCategoria(categoria);
+			}
+
+			mapper.map(produtoEntradaDto, produto);
+
+			log.info("editar, mapeamento: produtoEntradaDto={}, entity={}", produtoEntradaDto, produto);
+
+			produtoRepository.save(produto);
 		} catch (ErroDeNegocioException e) {
 			throw e;
 		} catch (Exception e) {
