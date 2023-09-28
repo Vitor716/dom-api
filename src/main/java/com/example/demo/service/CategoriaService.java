@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.jfree.util.Log;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import com.example.demo.model.Categoria;
 import com.example.demo.repository.CategoriaRepository;
 import com.example.demo.validator.CategoriaValidator;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class CategoriaService {
 	@Autowired
@@ -28,59 +31,105 @@ public class CategoriaService {
 	private CategoriaValidator categoriaValidator;
 
 	public CategoriaSaidaDto criar(CategoriaEntradaDto categoriaEntradaDto) {
-		Categoria categoria = mapper.map(categoriaEntradaDto, Categoria.class);
+		try {
+			categoriaValidator.criar(categoriaEntradaDto);
 
-		categoriaValidator.criar(categoriaEntradaDto);
+			Categoria categoria = mapper.map(categoriaEntradaDto, Categoria.class);
 
-		Categoria registroCategoriaBanco = categoriaRepository.save(categoria);
+			Categoria registroCategoriaBanco = categoriaRepository.save(categoria);
 
-		CategoriaSaidaDto categoriaSaidaDto = mapper.map(registroCategoriaBanco, CategoriaSaidaDto.class);
+			CategoriaSaidaDto categoriaSaidaDto = mapper.map(registroCategoriaBanco, CategoriaSaidaDto.class);
 
-		return categoriaSaidaDto;
+			return categoriaSaidaDto;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			Log.error("criar, erro generico: e=", e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
 	}
 
+	@Transactional
 	public void editar(Integer id, CategoriaEntradaDto categoriaEntradaDto) {
-		Optional<Categoria> optional = categoriaRepository.findById(id);
+		try {
+			Optional<Categoria> optional = categoriaRepository.findById(id);
 
-		if (!optional.isPresent()) {
-			throw new ErroDeNegocioException(TabelaDeErros.CATEGORIA_NAO_ENCONTRADA);
+			if (!optional.isPresent()) {
+				throw new ErroDeNegocioException(TabelaDeErros.CATEGORIA_NAO_ENCONTRADA);
+			}
+
+			Categoria registroCategoriaBanco = optional.get();
+
+			categoriaValidator.editar(id, categoriaEntradaDto);
+
+			mapper.map(categoriaEntradaDto, registroCategoriaBanco);
+
+			categoriaRepository.save(registroCategoriaBanco);
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			Log.error("editar, erro generico e=", e);
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
 		}
 
-		Categoria registroCategoriaBanco = optional.get();
-
-		categoriaValidator.editar(id, categoriaEntradaDto);
-
-		mapper.map(categoriaEntradaDto, registroCategoriaBanco);
-
-		categoriaRepository.save(registroCategoriaBanco);
 	}
 
+	@Transactional
 	public void excluir(Integer id) {
-		categoriaValidator.excluir(id);
+		try {
+			categoriaValidator.excluir(id);
 
-		categoriaRepository.deleteById(id);
+			categoriaRepository.deleteById(id);
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			Log.error(e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
+
 	}
 
 	public CategoriaSaidaDto pegarUm(Integer id) {
-		Optional<Categoria> optional = categoriaRepository.findById(id);
+		try {
+			Optional<Categoria> optional = categoriaRepository.findById(id);
 
-		if (!optional.isPresent()) {
-			throw new ErroDeNegocioException(TabelaDeErros.CATEGORIA_NAO_ENCONTRADA);
+			if (!optional.isPresent()) {
+				throw new ErroDeNegocioException(TabelaDeErros.CATEGORIA_NAO_ENCONTRADA);
+			}
+
+			Categoria registroCategoriaBanco = optional.get();
+
+			CategoriaSaidaDto categoriaSaidaDto = mapper.map(registroCategoriaBanco, CategoriaSaidaDto.class);
+
+			return categoriaSaidaDto;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			Log.error(e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
 		}
 
-		Categoria registroCategoriaBanco = optional.get();
-
-		CategoriaSaidaDto categoriaSaidaDto = mapper.map(registroCategoriaBanco, CategoriaSaidaDto.class);
-
-		return categoriaSaidaDto;
 	}
 
 	public List<CategoriaSaidaDto> pegarTodos() {
-		List<Categoria> categorias = categoriaRepository.findAll();
+		try {
+			List<Categoria> categorias = categoriaRepository.findAll();
 
-		List<CategoriaSaidaDto> categoriaSaidaDto = mapper.map(categorias, new TypeToken<List<CategoriaSaidaDto>>() {
-		}.getType());
+			List<CategoriaSaidaDto> categoriaSaidaDto = mapper.map(categorias,
+					new TypeToken<List<CategoriaSaidaDto>>() {
+					}.getType());
 
-		return categoriaSaidaDto;
+			return categoriaSaidaDto;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			Log.error(e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
+
 	}
 }
