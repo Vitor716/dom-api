@@ -6,9 +6,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity()
 @Table(name = "categoria")
 public class Categoria {
@@ -19,7 +23,7 @@ public class Categoria {
 
 	@Column(length = 200, unique = true, nullable = false)
 	private String nome;
-	
+
 	@Column(length = 500)
 	private String descricao;
 }

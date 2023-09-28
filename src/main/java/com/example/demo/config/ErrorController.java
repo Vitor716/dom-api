@@ -3,7 +3,6 @@ package com.example.demo.config;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -18,17 +17,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.demo.dtos.ErroDto;
+import com.example.demo.exception.ErroDeNegocioException;
 import com.example.demo.model.Erro;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
-import com.example.demo.exception.ErroDeNegocioException;
-
-
 @RestControllerAdvice
 public class ErrorController {
-	
+
 	@Autowired
 	private MessageSource messageSource;
 

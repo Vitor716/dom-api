@@ -49,7 +49,7 @@ public class CategoriaService {
 		Categoria registroCategoriaBanco = optional.get();
 
 		categoriaValidator.editar(id, categoriaEntradaDto);
-		
+
 		mapper.map(categoriaEntradaDto, registroCategoriaBanco);
 
 		categoriaRepository.save(registroCategoriaBanco);
@@ -57,7 +57,7 @@ public class CategoriaService {
 
 	public void excluir(Integer id) {
 		categoriaValidator.excluir(id);
-		
+
 		categoriaRepository.deleteById(id);
 	}
 

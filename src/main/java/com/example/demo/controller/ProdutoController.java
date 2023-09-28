@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.io.IOError;
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import com.example.demo.dtos.produto.ProdutoEntradaDto;
 import com.example.demo.dtos.produto.ProdutoSaidaDto;
 import com.example.demo.service.ProdutoService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.extern.log4j.Log4j2;
@@ -26,7 +29,7 @@ import lombok.extern.log4j.Log4j2;
 @RestController
 @Log4j2
 @Validated
-@RequestMapping("v1/produto")
+@RequestMapping("v2/produto")
 public class ProdutoController {
 	@Autowired
 	private ProdutoService produtoService;
@@ -55,11 +58,16 @@ public class ProdutoController {
 		return produtoService.listar();
 	}
 
+	@GetMapping("grafico")
+	public void gerarGrafico(HttpServletResponse reponse) throws IOException{
+		produtoService.gerarGrafico(reponse);
+	}
+	
 	@DeleteMapping
 	public void excluir(Integer id) {
 		log.info("excluir : {}", id);
 
 		produtoService.excluir(id);
 	}
-
+	
 }
