@@ -29,7 +29,7 @@ public class Produto {
 	@Column(length = 500)
 	private String descricao;
 
-	@Column(length = 200, unique = true, nullable = false)
+	@Column(length = 200, nullable = false)
 	private String marca;
 
 	@Column(nullable = false)

@@ -14,5 +14,4 @@ import lombok.ToString;
 public class ErroDto {
 	private String erro;
 	private List<Erro> validacoes;
-	
 }
