@@ -6,12 +6,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity()
 @Table(name = "produto")
 public class Produto {
@@ -37,10 +40,10 @@ public class Produto {
 
 	private String imagem;
 
-    @Column(name = "min_quantidade", nullable = false)
+	@Column(name = "min_quantidade", nullable = false)
 	private Integer min_quantidade;
-    
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Categoria categoria;
+
+	@ManyToOne
+	@JoinColumn(name = "category_id", nullable = false)
+	private Categoria categoria;
 }

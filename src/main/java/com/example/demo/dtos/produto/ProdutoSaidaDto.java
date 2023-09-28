@@ -1,12 +1,14 @@
 package com.example.demo.dtos.produto;
+
 import com.example.demo.dtos.categoria.CategoriaSaidaDto;
-import com.example.demo.model.Categoria;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class ProdutoSaidaDto {
 	private Integer id;
 	private String nome;

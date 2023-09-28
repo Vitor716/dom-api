@@ -8,11 +8,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum TabelaDeErros {
-	
+
 	CATEGORIA_NAO_ENCONTRADA(HttpStatus.NOT_FOUND, "Categoria não encontrada"),
 	CATEGORIA_JA_UTILIZADA(HttpStatus.PRECONDITION_FAILED, "Categoria já utilizada"),
-	PRODUTO_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Produto não encontrado");
+	PRODUTO_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Produto não encontrado"),
+	ERRO_DE_SISTEMA(HttpStatus.INTERNAL_SERVER_ERROR, "Sistema indisponível");
+
 	
-	private final HttpStatus httpStatus; 
+	private final HttpStatus httpStatus;
 	private final String erro;
 }

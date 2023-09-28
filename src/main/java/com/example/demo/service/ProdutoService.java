@@ -26,85 +26,135 @@ import lombok.extern.log4j.Log4j2;
 public class ProdutoService {
 	@Autowired
 	private ProdutoRepository produtoRepository;
-	
+
 	@Autowired
 	private CategoriaRepository categoriaRepository;
-	
+
 	@Autowired
 	private ProdutoValidator produtoValidator;
 
 	@Autowired
 	private ModelMapper mapper;
-	
+
+	@Transactional
 	public ProdutoSaidaDto criar(ProdutoEntradaDto produtoEntradaDto) {
-		Produto produto = mapper.map(produtoEntradaDto, Produto.class);
-		
-		if(produtoEntradaDto.getIdCategoria() != null) {
-			Optional<Categoria> optionalCategoria = categoriaRepository.findById(produtoEntradaDto.getIdCategoria());
-			
-			if(!optionalCategoria.isPresent()) {
-				log.error("Criar, categoria não encontrada: id={}", produtoEntradaDto.getIdCategoria());
-				throw new ErroDeNegocioException(TabelaDeErros.CATEGORIA_NAO_ENCONTRADA);
+		try {
+			Produto produto = mapper.map(produtoEntradaDto, Produto.class);
+
+			if (produtoEntradaDto.getIdCategoria() != null) {
+				Optional<Categoria> optionalCategoria = categoriaRepository
+						.findById(produtoEntradaDto.getIdCategoria());
+
+				if (!optionalCategoria.isPresent()) {
+					log.error("Criar, categoria não encontrada: id={}", produtoEntradaDto.getIdCategoria());
+					throw new ErroDeNegocioException(TabelaDeErros.CATEGORIA_NAO_ENCONTRADA);
+				}
+
+				Categoria categoria = optionalCategoria.get();
+				produto.setCategoria(categoria);
 			}
-			
-			Categoria categoria  = optionalCategoria.get();
-			produto.setCategoria(categoria);
+
+			log.info("criar, mapeamento: clienteEntradaDto={}, entity={}", produtoEntradaDto, produto);
+
+			Produto registroProdutoBanco = produtoRepository.save(produto);
+
+			ProdutoSaidaDto produtoSaidaDto = mapper.map(registroProdutoBanco, ProdutoSaidaDto.class);
+
+			return produtoSaidaDto;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error("pegarUm, erro generico: e=", e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
 		}
-		
-		log.info("criar, mapeamento: clienteEntradaDto={}, entity={}", produtoEntradaDto, produto);
-		
-		Produto registroProdutoBanco = produtoRepository.save(produto);
-		
-		ProdutoSaidaDto produtoSaidaDto = mapper.map(registroProdutoBanco, ProdutoSaidaDto.class);
-		
-		return produtoSaidaDto;
+
 	}
-	
+
 	public void editar(Integer id, ProdutoEntradaDto produtoEntradaDto) {
-		Optional<Produto> optional = produtoRepository.findById(id);
-		
-		if(!optional.isPresent()) {
-			throw new ErroDeNegocioException(TabelaDeErros.PRODUTO_NAO_ENCONTRADO);
+		try {
+			Optional<Produto> optional = produtoRepository.findById(id);
+
+			if (!optional.isPresent()) {
+				throw new ErroDeNegocioException(TabelaDeErros.PRODUTO_NAO_ENCONTRADO);
+			}
+
+			Produto registroProdutoBanco = optional.get();
+
+			mapper.map(produtoEntradaDto, registroProdutoBanco);
+
+			produtoRepository.save(registroProdutoBanco);
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error("pegarUm, erro generico: e=", e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
 		}
-		
-		Produto registroProdutoBanco = optional.get();
-		
-		mapper.map(produtoEntradaDto, registroProdutoBanco);
-		
-		produtoRepository.save(registroProdutoBanco);
+
 	}
-	
-	public List<ProdutoSaidaDto> listar(){
-		List<Produto> produtos = produtoRepository.findAll();
-		
-		List<ProdutoSaidaDto> produtoSaidaDto = mapper.map(produtos, new TypeToken<List<ProdutoSaidaDto>>() {
-		}.getType());
-		
-		log.info("listar, mapeamento: clienteSaidaDto={}", produtoSaidaDto);
-		
-		return produtoSaidaDto;
+
+	public List<ProdutoSaidaDto> listar() {
+		try {
+			List<Produto> produtos = produtoRepository.findAll();
+
+			List<ProdutoSaidaDto> produtoSaidaDto = mapper.map(produtos, new TypeToken<List<ProdutoSaidaDto>>() {
+			}.getType());
+
+			log.info("listar, mapeamento: clienteSaidaDto={}", produtoSaidaDto);
+
+			return produtoSaidaDto;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error("pegarUm, erro generico: e=", e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
+
 	}
-	
+
 	public ProdutoSaidaDto pegarUm(Integer id) {
-		Optional<Produto> optional = produtoRepository.findById(id);
-		
-		if(!optional.isPresent()) {
-			throw new ErroDeNegocioException(TabelaDeErros.PRODUTO_NAO_ENCONTRADO);
+		try {
+			Optional<Produto> optional = produtoRepository.findById(id);
+
+			if (!optional.isPresent()) {
+				throw new ErroDeNegocioException(TabelaDeErros.PRODUTO_NAO_ENCONTRADO);
+			}
+
+			Produto registroProdutoBanco = optional.get();
+
+			ProdutoSaidaDto produtoSaidaDto = mapper.map(registroProdutoBanco, ProdutoSaidaDto.class);
+
+			return produtoSaidaDto;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error("pegarUm, erro generico: e=", e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
 		}
-		
-		Produto registroProdutoBanco = optional.get();
-		
-		ProdutoSaidaDto produtoSaidaDto = mapper.map(registroProdutoBanco, ProdutoSaidaDto.class);
-		
-		return produtoSaidaDto;
+
 	}
-	
+
+//	public void gerarGrafico(HttpServletResponse reponse) throws IOException {
+//		DefaultPieDataset dataset = new DefaultPieDataset();
+//
+////		List<Relatorio> contagemTipoProduto = produtoRepository.findAll();
+//	}
+
 	@Transactional
 	public void excluir(Integer id) {
-		produtoValidator.excluir(id);
-		
-		log.info("excluir, mapeamento: id={}", id);
-		
-		produtoRepository.deleteById(id);
+		try {
+			produtoValidator.excluir(id);
+
+			log.info("excluir, mapeamento: id={}", id);
+
+			produtoRepository.deleteById(id);
+		} catch (Exception e) {
+			log.error("excluir, erro generico: e=", e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
 	}
 }

@@ -7,13 +7,13 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ErroDeNegocioException extends RuntimeException{
+public class ErroDeNegocioException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
-	
-	private final HttpStatus httpStatus; 
+
+	private final HttpStatus httpStatus;
 	private final String erro;
-	
-	public ErroDeNegocioException (TabelaDeErros tabela) {
+
+	public ErroDeNegocioException(TabelaDeErros tabela) {
 		this.httpStatus = tabela.getHttpStatus();
 		this.erro = tabela.getErro();
 	}
