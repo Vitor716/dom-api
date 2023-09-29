@@ -9,8 +9,8 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dtos.categoria.CategoriaEntradaDto;
-import com.example.demo.dtos.categoria.CategoriaSaidaDto;
+import com.example.demo.dtos.CategoriaEntradaDto;
+import com.example.demo.dtos.CategoriaSaidaDto;
 import com.example.demo.exception.ErroDeNegocioException;
 import com.example.demo.exception.TabelaDeErros;
 import com.example.demo.model.Categoria;

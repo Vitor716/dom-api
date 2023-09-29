@@ -1,4 +1,4 @@
-package com.example.demo.dtos.produto;
+package com.example.demo.dtos;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;

@@ -1,6 +1,4 @@
-package com.example.demo.dtos.produto;
-
-import com.example.demo.dtos.categoria.CategoriaSaidaDto;
+package com.example.demo.dtos;
 
 import lombok.Getter;
 import lombok.Setter;

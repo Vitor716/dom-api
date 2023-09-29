@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.categoria.CategoriaEntradaDto;
-import com.example.demo.dtos.categoria.CategoriaSaidaDto;
+import com.example.demo.dtos.CategoriaEntradaDto;
+import com.example.demo.dtos.CategoriaSaidaDto;
 import com.example.demo.service.CategoriaService;
 
 import jakarta.validation.Valid;
