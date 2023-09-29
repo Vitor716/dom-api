@@ -8,8 +8,8 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dtos.produto.ProdutoEntradaDto;
-import com.example.demo.dtos.produto.ProdutoSaidaDto;
+import com.example.demo.dtos.ProdutoEntradaDto;
+import com.example.demo.dtos.ProdutoSaidaDto;
 import com.example.demo.exception.ErroDeNegocioException;
 import com.example.demo.exception.TabelaDeErros;
 import com.example.demo.model.Categoria;

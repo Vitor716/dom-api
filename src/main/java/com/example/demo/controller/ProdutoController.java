@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import java.io.IOError;
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.produto.ProdutoEntradaDto;
-import com.example.demo.dtos.produto.ProdutoSaidaDto;
+import com.example.demo.dtos.ProdutoEntradaDto;
+import com.example.demo.dtos.ProdutoSaidaDto;
 import com.example.demo.service.ProdutoService;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.extern.log4j.Log4j2;
