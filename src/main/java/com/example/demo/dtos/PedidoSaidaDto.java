@@ -1,10 +1,11 @@
-package com.example.demo.model;
+package com.example.demo.dtos;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.example.demo.model.ItemPedido;
+import com.example.demo.model.Usuario;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,9 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Entity
-@Table(name = "pedido")
-public class Pedido {
+public class PedidoSaidaDto {
 	private Integer id;
 	private Usuario usuario;;
 	private List<ItemPedido> item;
