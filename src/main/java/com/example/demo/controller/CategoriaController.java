@@ -34,7 +34,7 @@ public class CategoriaController {
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@PostMapping
 	public CategoriaSaidaDto criar(@Valid @RequestBody CategoriaEntradaDto categoriaEntradaDto) {
-		log.info("salvar : {}", categoriaEntradaDto);
+		log.info("criar : {}", categoriaEntradaDto);
 
 		return categoriaService.criar(categoriaEntradaDto);
 	}
