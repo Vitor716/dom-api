@@ -8,5 +8,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class UsuarioSaidaDto {
+	private Integer id;
 	private String nome;
 }
