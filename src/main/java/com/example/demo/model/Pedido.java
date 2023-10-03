@@ -38,9 +38,9 @@ public class Pedido {
 	@JsonFormat(pattern = "ddMMyyyy")
 	private LocalDate data;
 
-	@OneToMany()
-	@JoinColumn(name = "item", nullable = false)
-	private List<ItemPedido> itens = new ArrayList<>(); // Usando ArrayList como uma implementação de List
+	@ManyToOne
+	@JoinColumn(name = "item_id", nullable = false)
+	private ItemPedido itens;// Usando ArrayList como uma implementação de List
 
 	// Talvez adicionar uma flag de pago ou não e quando for pagar passar o id para
 	// pagar o produto

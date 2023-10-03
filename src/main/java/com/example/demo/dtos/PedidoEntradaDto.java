@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -16,8 +15,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class PedidoEntradaDto {
-	@NotBlank(message = "obrigatório")
-	private String nomeUsuario;
+	@NotNull(message = "obrigatório")
+	private Integer idUsuario;
 
 	@NotNull(message = "Itens do pedido são obrigatórios")
 	@Size(min = 1, message = "Pelo menos um item deve ser fornecido")
