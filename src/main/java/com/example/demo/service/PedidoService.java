@@ -1,31 +1,45 @@
 package com.example.demo.service;
 
-import java.util.List;
-
+import org.jfree.util.Log;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.model.ItemPedido;
+import com.example.demo.dtos.PedidoEntradaDto;
+import com.example.demo.dtos.PedidoSaidaDto;
+import com.example.demo.exception.ErroDeNegocioException;
+import com.example.demo.exception.TabelaDeErros;
 import com.example.demo.model.Pedido;
-import com.example.demo.model.Usuario;
-import com.example.demo.repository.ItemPedidoRepository;
 import com.example.demo.repository.PedidoRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class PedidoService {
+
 	@Autowired
 	private PedidoRepository pedidoRepository;
 
 	@Autowired
-	private ItemPedidoRepository itemPedidoRepository;
+	private ModelMapper mapper;
 
 	@Transactional
-	public Pedido comprar(Usuario usuario, List<ItemPedido> itens) {
-		Pedido pedido = new Pedido();
-		pedido.setUsuario(usuario);
-		pedido.setDate(new Date());
-		
+	public PedidoSaidaDto criar(PedidoEntradaDto pedidoEntradaDto) {
+		try {
+			Pedido pedido = mapper.map(pedidoEntradaDto, Pedido.class);
+			
+			Pedido registroPedidoBanco = pedidoRepository.save(pedido);
+			
+			PedidoSaidaDto pedidoSaidaDto = mapper.map(registroPedidoBanco, PedidoSaidaDto.class);
+			
+			return pedidoSaidaDto;
+			
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			Log.error("criar, erro generico: e=", e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
 	}
 }

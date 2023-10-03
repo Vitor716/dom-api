@@ -7,5 +7,5 @@ import com.example.demo.model.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
-
+	boolean existsByNome(String nome);
 }

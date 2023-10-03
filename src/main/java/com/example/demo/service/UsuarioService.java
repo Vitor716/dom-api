@@ -9,9 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.UsuarioEntradaDto;
 import com.example.demo.dtos.UsuarioSaidaDto;
+import com.example.demo.exception.ErroDeNegocioException;
+import com.example.demo.exception.TabelaDeErros;
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.UsuarioRepository;
+import com.example.demo.validator.UsuarioValidator;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -24,33 +28,65 @@ public class UsuarioService {
 	@Autowired
 	private ModelMapper mapper;
 
+	@Autowired
+	private UsuarioValidator usuarioValidator;
+
+	@Transactional
 	public UsuarioSaidaDto criar(UsuarioEntradaDto usuarioEntradaDto) {
-		Usuario usuario = mapper.map(usuarioEntradaDto, Usuario.class);
+		try {
+			usuarioValidator.criar(usuarioEntradaDto);
 
-		log.info("criar, mapeamento: usuarioEntradaDto={}, entity={}", usuarioEntradaDto, usuario);
+			Usuario usuario = mapper.map(usuarioEntradaDto, Usuario.class);
 
-		Usuario registroUsuarioBanco = usuarioRepository.save(usuario);
+			log.info("criar, mapeamento: usuarioEntradaDto={}, entity={}", usuarioEntradaDto, usuario);
 
-		UsuarioSaidaDto usuarioSaidaDto = mapper.map(registroUsuarioBanco, UsuarioSaidaDto.class);
+			Usuario registroUsuarioBanco = usuarioRepository.save(usuario);
 
-		return usuarioSaidaDto;
+			UsuarioSaidaDto usuarioSaidaDto = mapper.map(registroUsuarioBanco, UsuarioSaidaDto.class);
+
+			return usuarioSaidaDto;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error("pegarUm, erro generico: e=", e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
 	}
 
 	public List<UsuarioSaidaDto> listar() {
-		List<Usuario> usuarios = usuarioRepository.findAll();
+		try {
+			List<Usuario> usuarios = usuarioRepository.findAll();
 
-		List<UsuarioSaidaDto> usuarioSaidaDto = mapper.map(usuarios, new TypeToken<List<UsuarioSaidaDto>>() {
-		}.getType());
+			List<UsuarioSaidaDto> usuarioSaidaDto = mapper.map(usuarios, new TypeToken<List<UsuarioSaidaDto>>() {
+			}.getType());
 
-		log.info("listar, mapeamento: usuarioSaidaDto={}", usuarioSaidaDto);
+			log.info("listar, mapeamento: usuarioSaidaDto={}", usuarioSaidaDto);
 
-		return usuarioSaidaDto;
+			return usuarioSaidaDto;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error("pegarUm, erro generico: e=", e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
+
 	}
 
+	@Transactional
 	public void excluir(Integer id) {
+		try {
+			usuarioValidator.excluir(id);
 
-		log.info("excluir, mapeamento: id={}", id);
+			log.info("excluir, mapeamento: id={}", id);
 
-		usuarioRepository.deleteById(id);
+			usuarioRepository.deleteById(id);
+		} catch (Exception e) {
+			log.error("excluir, erro generico: e=", e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
+
 	}
 }

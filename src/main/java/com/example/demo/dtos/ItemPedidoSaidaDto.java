@@ -7,7 +7,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UsuarioSaidaDto {
+public class ItemPedidoSaidaDto {
 	private Integer id;
-	private String nome;
+	private ProdutoSaidaDto produto;
+	private PedidoSaidaDto pedido;
+	private Integer quantidade;
 }
