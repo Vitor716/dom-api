@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.PedidoEntradaDto;
 import com.example.demo.dtos.PedidoSaidaDto;
+import com.example.demo.model.Pedido;
 import com.example.demo.service.PedidoService;
 
 import jakarta.validation.Valid;
@@ -26,9 +27,9 @@ public class PedidoController {
 
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@PostMapping
-	public PedidoSaidaDto criar(@Valid @RequestBody PedidoEntradaDto pedidoEntradaDto) {
-		log.info("criar : {}", pedidoEntradaDto);
+	public Pedido criar(@Valid @RequestBody Pedido pedido) {
+//		log.info("criar : {}", pedidoEntradaDto);
 
-		return pedidoService.criar(pedidoEntradaDto);
+		return pedidoService.criar(pedido);
 	}
 }
