@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.example.demo.model.ItemPedido;
+import com.example.demo.model.StatusPedido;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.validation.constraints.NotNull;
@@ -16,10 +17,15 @@ import lombok.ToString;
 @Setter
 @ToString
 public class PedidoEntradaDto {
+	
+	private Integer idUsuario;
+	
+	private StatusPedido status;
+	
 	@NotNull(message = "Itens do pedido são obrigatórios")
 	@Size(min = 1, message = "Pelo menos um item deve ser fornecido")
-	private List<ItemPedidoEntradaDto> itens;
-
+	private List<Integer> itens;	
+	
 	@NotNull(message = "obrigatório")
 	@JsonFormat(pattern = "ddMMyyyy")
 	private LocalDate data;

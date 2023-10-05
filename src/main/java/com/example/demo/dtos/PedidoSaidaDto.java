@@ -3,6 +3,7 @@ package com.example.demo.dtos;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.demo.model.StatusPedido;
 import com.example.demo.model.Usuario;
 
 import lombok.Getter;
@@ -14,7 +15,8 @@ import lombok.ToString;
 @ToString
 public class PedidoSaidaDto {
 	private Integer id;
+	private StatusPedido status;
 	private Usuario usuario;;
-	private List<ItemPedidoSaidaDto> item;
-	private LocalDate date;
+	private List<ItemPedidoSaidaDto> itens;
+	private LocalDate data;
 }

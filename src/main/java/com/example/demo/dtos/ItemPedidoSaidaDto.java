@@ -9,6 +9,7 @@ import lombok.ToString;
 @ToString
 public class ItemPedidoSaidaDto {
 	private Integer id;
+	private Integer quantidade;
 	private ProdutoSaidaDto produto;
-//	private Integer quantidade;
+	private UsuarioSaidaDto usuario;
 }
