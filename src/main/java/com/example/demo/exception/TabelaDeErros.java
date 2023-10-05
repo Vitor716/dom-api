@@ -11,6 +11,8 @@ public enum TabelaDeErros {
 
 	CATEGORIA_NAO_ENCONTRADA(HttpStatus.NOT_FOUND, "Categoria não encontrada"),
 	USUARIO_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Usuário não encontrado"),
+	USUARIO_COM_ITEM_DUPLICADO(HttpStatus.PRECONDITION_FAILED, "Usuário com o item duplicado"),
+	QUANTIDADE_MAIOR(HttpStatus.PRECONDITION_FAILED, "Quantidade maior que o esperado para esse produto"),
 	CATEGORIA_JA_UTILIZADA(HttpStatus.PRECONDITION_FAILED, "Categoria já utilizada"),
 	LISTA_DE_PRODUTOS_VAZIA(HttpStatus.PRECONDITION_FAILED, "Lista de produtos vazia"),
 	NOME_JA_EM_USO(HttpStatus.PRECONDITION_FAILED, "Nome já em uso"),
