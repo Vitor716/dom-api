@@ -9,3 +9,6 @@ INSERT INTO produto (descricao, imagem, marca, min_quantidade, nome, preco, quan
 INSERT INTO usuario (nome) VALUES
 ('Vitor'),
 ('Manuela');
+
+INSERT INTO item_pedido (quantidade, produto_id, usuario_id) VALUES
+(1, 1, 2);
