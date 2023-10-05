@@ -10,6 +10,5 @@ import lombok.ToString;
 public class ItemPedidoSaidaDto {
 	private Integer id;
 	private ProdutoSaidaDto produto;
-	private PedidoSaidaDto pedido;
-	private Integer quantidade;
+//	private Integer quantidade;
 }
