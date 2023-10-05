@@ -27,9 +27,9 @@ public class PedidoController {
 
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@PostMapping
-	public Pedido criar(@Valid @RequestBody Pedido pedido) {
-//		log.info("criar : {}", pedidoEntradaDto);
+	public PedidoSaidaDto criar(@Valid @RequestBody PedidoEntradaDto pedidoEntradaDto) {
+		log.info("criar : {}", pedidoEntradaDto);
 
-		return pedidoService.criar(pedido);
+		return pedidoService.criar(pedidoEntradaDto);
 	}
 }
