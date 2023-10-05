@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -31,16 +32,16 @@ public class Pedido {
 	private Integer id;
 
 	@ManyToOne
-	@JoinColumn(name = "usuario_id", nullable = false)
+	@JoinColumn(name = "usuario_id")
 	private Usuario usuario;
 
 	@Column(nullable = false)
 	@JsonFormat(pattern = "ddMMyyyy")
 	private LocalDate data;
 
-	@ManyToOne
+	@ManyToMany
 	@JoinColumn(name = "item_id", nullable = false)
-	private ItemPedido itens;// Usando ArrayList como uma implementação de List
+	private List<ItemPedido> itens;// Usando ArrayList como uma implementação de List
 
 	// Talvez adicionar uma flag de pago ou não e quando for pagar passar o id para
 	// pagar o produto
