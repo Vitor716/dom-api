@@ -17,6 +17,7 @@ public enum TabelaDeErros {
 	LISTA_DE_PRODUTOS_VAZIA(HttpStatus.PRECONDITION_FAILED, "Lista de produtos vazia"),
 	NOME_JA_EM_USO(HttpStatus.PRECONDITION_FAILED, "Nome já em uso"),
 	PRODUTO_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Produto não encontrado"),
+	PEDIDO_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Pedido não encontrado"),
 	ITEM_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Item não encontrado"),
 	ERRO_DE_SISTEMA(HttpStatus.INTERNAL_SERVER_ERROR, "Sistema indisponível");
 	

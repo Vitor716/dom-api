@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.example.demo.model.StatusPedido;
 import com.example.demo.model.Usuario;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,5 +19,6 @@ public class PedidoSaidaDto {
 	private StatusPedido status;
 	private Usuario usuario;;
 	private List<ItemPedidoSaidaDto> itens;
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate data;
 }

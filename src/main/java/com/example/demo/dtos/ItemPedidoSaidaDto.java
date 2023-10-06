@@ -11,5 +11,4 @@ public class ItemPedidoSaidaDto {
 	private Integer id;
 	private Integer quantidade;
 	private ProdutoSaidaDto produto;
-	private UsuarioSaidaDto usuario;
 }
