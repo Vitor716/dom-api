@@ -18,6 +18,7 @@ import com.example.demo.exception.TabelaDeErros;
 import com.example.demo.model.Categoria;
 import com.example.demo.model.ItemPedido;
 import com.example.demo.model.Pedido;
+import com.example.demo.model.Produto;
 import com.example.demo.model.StatusPedido;
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.ItemPedidoRepository;
@@ -103,7 +104,7 @@ public class PedidoService {
 			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
 		}
 	}
-	
+
 	@Transactional
 	public void excluir(Integer id) {
 		Optional<Pedido> optional = pedidoRepository.findById(id);
@@ -113,7 +114,33 @@ public class PedidoService {
 		}
 
 		Pedido registroPedidoBanco = optional.get();
-		
-		registroPedidoBanco.setStatus(StatusPedido.FECHADO);		
+
+		registroPedidoBanco.setStatus(StatusPedido.FECHADO);
+	}
+
+	@Transactional
+	public Double calcular(Integer id) {
+		Optional<Pedido> optional = pedidoRepository.findById(id);
+
+		if (!optional.isPresent()) {
+			throw new ErroDeNegocioException(TabelaDeErros.PEDIDO_NAO_ENCONTRADO);
+		}
+
+		Pedido registroPedidoBanco = optional.get();
+		double total = 0.0;
+
+		for (ItemPedido item : registroPedidoBanco.getItens()) {
+			Produto produto = item.getProduto();
+			Integer quantidade = item.getQuantidade();
+			double precoUnitario = produto.getPreco();
+			double subtotalItem = precoUnitario * quantidade;
+			total += subtotalItem;
+		}
+
+		PedidoSaidaDto pedidoSaidaDto = new PedidoSaidaDto();
+		pedidoSaidaDto.setTotal(total);
+		mapper.map(registroPedidoBanco, PedidoSaidaDto.class);
+
+		return pedidoSaidaDto.getTotal();
 	}
 }

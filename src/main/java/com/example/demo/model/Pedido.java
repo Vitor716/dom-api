@@ -44,4 +44,6 @@ public class Pedido {
 	private List<ItemPedido> itens;
 	
 	private StatusPedido status;
+	
+	private Double total;
 }
