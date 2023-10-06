@@ -21,4 +21,5 @@ public class PedidoSaidaDto {
 	private List<ItemPedidoSaidaDto> itens;
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate data;
+	private Double total;
 }

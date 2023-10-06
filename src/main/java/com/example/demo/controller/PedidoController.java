@@ -51,4 +51,10 @@ public class PedidoController {
 
 		pedidoService.excluir(id);
 	}
+	
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	@PostMapping("calcular/{id}")
+	public Double calcularPedido(@Positive(message = "O ID não pode ser negativo ou zero") @PathVariable Integer id) {
+		return pedidoService.calcular(id);
+	}
 }
