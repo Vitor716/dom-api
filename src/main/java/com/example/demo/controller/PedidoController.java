@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.CategoriaSaidaDto;
 import com.example.demo.dtos.PedidoEntradaDto;
 import com.example.demo.dtos.PedidoSaidaDto;
-import com.example.demo.model.Pedido;
 import com.example.demo.service.PedidoService;
 
 import jakarta.validation.Valid;
@@ -45,6 +43,16 @@ public class PedidoController {
 		return pedidoService.pegarTodos();
 	}
 	
+	@GetMapping("fechados")
+	public List<PedidoSaidaDto> pegarTodosFechados() {
+		return pedidoService.pegarTodosFechados();
+	}
+	
+	@GetMapping("abertos")
+	public List<PedidoSaidaDto> pegarTodosAbertos() {
+		return pedidoService.pegarTodosAbertos();
+	}
+	
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@DeleteMapping("id/{id}")
 	public void excluir(@Positive(message = "O ID não pode ser negativo ou zero") @PathVariable Integer id) {
@@ -52,9 +60,9 @@ public class PedidoController {
 		pedidoService.excluir(id);
 	}
 	
-	@ResponseStatus(code = HttpStatus.NO_CONTENT)
-	@PostMapping("calcular/{id}")
-	public Double calcularPedido(@Positive(message = "O ID não pode ser negativo ou zero") @PathVariable Integer id) {
-		return pedidoService.calcular(id);
-	}
+//	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+//	@PostMapping("calcular/{id}")
+//	public Double calcularPedido(@Positive(message = "O ID não pode ser negativo ou zero") @PathVariable Integer id) {
+//		return pedidoService.calcular(id);
+//	}
 }

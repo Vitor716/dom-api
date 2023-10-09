@@ -92,10 +92,66 @@ public class PedidoService {
 		try {
 			List<Pedido> pedidos = pedidoRepository.findAll();
 
-			List<PedidoSaidaDto> pedidoSaidaDto = mapper.map(pedidos, new TypeToken<List<PedidoSaidaDto>>() {
+			List<PedidoSaidaDto> pedidoSaidaDtoList = mapper.map(pedidos, new TypeToken<List<PedidoSaidaDto>>() {
 			}.getType());
 
-			return pedidoSaidaDto;
+			for (Pedido pedido : pedidos) {
+				double total = calcular(pedido);
+				PedidoSaidaDto pedidoSaidaDto = mapper.map(pedido, PedidoSaidaDto.class);
+				pedidoSaidaDto.setTotal(total);
+				pedidoSaidaDtoList.add(pedidoSaidaDto);
+			}
+
+			return pedidoSaidaDtoList;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			Log.error(e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
+	}
+	
+	
+	public List<PedidoSaidaDto> pegarTodosFechados() {
+		try {
+			List<Pedido> pedidos = pedidoRepository.findPedidosFechados();
+
+			List<PedidoSaidaDto> pedidoSaidaDtoList = mapper.map(pedidos, new TypeToken<List<PedidoSaidaDto>>() {
+			}.getType());
+
+			for (Pedido pedido : pedidos) {
+				double total = calcular(pedido);
+				PedidoSaidaDto pedidoSaidaDto = mapper.map(pedido, PedidoSaidaDto.class);
+				pedidoSaidaDto.setTotal(total);
+				pedidoSaidaDtoList.add(pedidoSaidaDto);
+			}
+
+			return pedidoSaidaDtoList;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			Log.error(e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
+	}
+	
+	public List<PedidoSaidaDto> pegarTodosAbertos() {
+		try {
+			List<Pedido> pedidos = pedidoRepository.findPedidosAbertos();
+
+			List<PedidoSaidaDto> pedidoSaidaDtoList = mapper.map(pedidos, new TypeToken<List<PedidoSaidaDto>>() {
+			}.getType());
+
+			for (Pedido pedido : pedidos) {
+				double total = calcular(pedido);
+				PedidoSaidaDto pedidoSaidaDto = mapper.map(pedido, PedidoSaidaDto.class);
+				pedidoSaidaDto.setTotal(total);
+				pedidoSaidaDtoList.add(pedidoSaidaDto);
+			}
+
+			return pedidoSaidaDtoList;
 		} catch (ErroDeNegocioException e) {
 			throw e;
 		} catch (Exception e) {
@@ -119,17 +175,10 @@ public class PedidoService {
 	}
 
 	@Transactional
-	public Double calcular(Integer id) {
-		Optional<Pedido> optional = pedidoRepository.findById(id);
-
-		if (!optional.isPresent()) {
-			throw new ErroDeNegocioException(TabelaDeErros.PEDIDO_NAO_ENCONTRADO);
-		}
-
-		Pedido registroPedidoBanco = optional.get();
+	public Double calcular(Pedido pedido) {
 		double total = 0.0;
 
-		for (ItemPedido item : registroPedidoBanco.getItens()) {
+		for (ItemPedido item : pedido.getItens()) {
 			Produto produto = item.getProduto();
 			Integer quantidade = item.getQuantidade();
 			double precoUnitario = produto.getPreco();
@@ -137,10 +186,6 @@ public class PedidoService {
 			total += subtotalItem;
 		}
 
-		PedidoSaidaDto pedidoSaidaDto = new PedidoSaidaDto();
-		pedidoSaidaDto.setTotal(total);
-		mapper.map(registroPedidoBanco, PedidoSaidaDto.class);
-
-		return pedidoSaidaDto.getTotal();
+		return total;
 	}
 }
