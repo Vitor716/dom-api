@@ -49,7 +49,17 @@ public class ProdutoController {
 	public ProdutoSaidaDto pegarUm(@Positive(message = "O ID não pode ser negativo ou zero") @PathVariable Integer id) {
 		return produtoService.pegarUm(id);
 	}
+	
+	@GetMapping("por-categoria/{id}")
+	public ProdutoSaidaDto pegarProdutoPorCategoriaId(@Positive(message = "O ID não pode ser negativo ou zero") @PathVariable Integer id) {
+		return produtoService.pegarProdutoPorCategoriaId(id);
+	}
 
+	@GetMapping("por-categoria/{nome}")
+	public ProdutoSaidaDto pegarProdutoPorNomeCategoria(@Positive(message = "O ID não pode ser negativo ou zero") @PathVariable String nome) {
+		return produtoService.pegarProdutoPorNomeCategoria(nome);
+	}
+	
 	@GetMapping
 	public List<ProdutoSaidaDto> listar() {
 		return produtoService.listar();
