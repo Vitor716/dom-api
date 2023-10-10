@@ -45,9 +45,6 @@ public class PedidoService {
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
 
-	@Autowired
-	private PedidoValidator pedidoValidator;
-
 	@Transactional
 	public PedidoSaidaDto criar(PedidoEntradaDto pedidoEntradaDto) {
 		try {
