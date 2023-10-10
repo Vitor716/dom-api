@@ -9,10 +9,13 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dtos.CategoriaSaidaDto;
 import com.example.demo.dtos.ItemPedidoEntradaDto;
 import com.example.demo.dtos.ItemPedidoSaidaDto;
+import com.example.demo.dtos.ProdutoEntradaDto;
 import com.example.demo.exception.ErroDeNegocioException;
 import com.example.demo.exception.TabelaDeErros;
+import com.example.demo.model.Categoria;
 import com.example.demo.model.ItemPedido;
 import com.example.demo.model.Produto;
 import com.example.demo.model.Usuario;
@@ -77,10 +80,13 @@ public class ItemPedidoService {
 				itemPedido.setProduto(produto);
 				itemPedido.setUsuario(usuario);
 
-				if (itemPedidoEntradaDto.getQuantidade() > produto.getQuantidade()) {
+				if (itemPedidoEntradaDto.getQuantidade() > produto.getQuantidade()
+						|| produto.getQuantidade() < produto.getMin_quantidade()) {
 					log.error("Criar, quantidade maior que no produto: id={}", itemPedidoEntradaDto.getQuantidade());
 					throw new ErroDeNegocioException(TabelaDeErros.QUANTIDADE_MAIOR);
 				}
+
+				produto.setQuantidade(produto.getQuantidade() - itemPedidoEntradaDto.getQuantidade());
 			}
 
 			ItemPedido registroItemPedidoBanco = itemPedidoRepository.save(itemPedido);
@@ -96,6 +102,92 @@ public class ItemPedidoService {
 
 			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
 		}
+	}
+
+	public void editar(Integer id, ItemPedidoEntradaDto itemPedidoEntradaDto) {
+		try {
+			produtoValidator.editar(id, produtoEntradaDto);
+
+			Optional<Produto> optional = produtoRepository.findById(id);
+
+			if (!optional.isPresent()) {
+				throw new ErroDeNegocioException(TabelaDeErros.PRODUTO_NAO_ENCONTRADO);
+			}
+
+			Produto produto = optional.get();
+
+			if (produtoEntradaDto.getIdCategoria() != null) {
+				Optional<Categoria> optionalCategoria = categoriaRepository
+						.findById(produtoEntradaDto.getIdCategoria());
+
+				if (!optionalCategoria.isPresent()) {
+					log.error("editar, categoria não encontrado: id={}", produtoEntradaDto.getIdCategoria());
+					throw new ErroDeNegocioException(TabelaDeErros.CATEGORIA_NAO_ENCONTRADA);
+				}
+
+				Categoria categoria = optionalCategoria.get();
+				produto.setCategoria(categoria);
+			}
+
+			mapper.map(produtoEntradaDto, produto);
+
+			log.info("editar, mapeamento: produtoEntradaDto={}, entity={}", produtoEntradaDto, produto);
+
+			produtoRepository.save(produto);
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error("pegarUm, erro generico: e=", e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
+
+	}
+
+	public ItemPedidoSaidaDto pegarUm(Integer id) {
+		try {
+			Optional<ItemPedido> optional = itemPedidoRepository.findById(id);
+
+			if (!optional.isPresent()) {
+				throw new ErroDeNegocioException(TabelaDeErros.ITEM_NAO_ENCONTRADO);
+			}
+
+			ItemPedido registroItemPedidoBanco = optional.get();
+
+			ItemPedidoSaidaDto itemPedidoSaidaDto = mapper.map(registroItemPedidoBanco, ItemPedidoSaidaDto.class);
+
+			return itemPedidoSaidaDto;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			Log.error(e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
+
+	}
+
+	public ItemPedidoSaidaDto listarPorUsuario(Integer usuarioId) {
+		try {
+			Optional<ItemPedido> optional = itemPedidoRepository.findByUsuarioId(usuarioId);
+
+			if (!optional.isPresent()) {
+				throw new ErroDeNegocioException(TabelaDeErros.ITEM_NAO_ENCONTRADO);
+			}
+
+			ItemPedido registroItemPedidoBanco = optional.get();
+
+			ItemPedidoSaidaDto itemPedidoSaidaDto = mapper.map(registroItemPedidoBanco, ItemPedidoSaidaDto.class);
+
+			return itemPedidoSaidaDto;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			Log.error(e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
+
 	}
 
 	public List<ItemPedidoSaidaDto> pegarTodos() {
