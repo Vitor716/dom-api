@@ -154,8 +154,30 @@ public class ProdutoService {
 		}
 
 	}
-	
-	
+
+	public ProdutoSaidaDto pegarUmPorNome(String nome) {
+		try {
+			Optional<Produto> optional = produtoRepository.findByNome(nome);
+
+			if (!optional.isPresent()) {
+				throw new ErroDeNegocioException(TabelaDeErros.PRODUTO_NAO_ENCONTRADO);
+			}
+
+			Produto registroProdutoBanco = optional.get();
+
+			ProdutoSaidaDto produtoSaidaDto = mapper.map(registroProdutoBanco, ProdutoSaidaDto.class);
+
+			return produtoSaidaDto;
+		} catch (ErroDeNegocioException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error("pegarUm, erro generico: e=", e);
+
+			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
+		}
+
+	}
+
 	public ProdutoSaidaDto pegarProdutoPorCategoriaId(Integer id) {
 		try {
 			Optional<Produto> optional = produtoRepository.findProdutosByCategoriaId(id);
@@ -178,7 +200,7 @@ public class ProdutoService {
 		}
 
 	}
-	
+
 	public ProdutoSaidaDto pegarProdutoPorNomeCategoria(String nome) {
 		try {
 			Optional<Produto> optional = produtoRepository.findProdutosByCategoriaNome(nome);
@@ -201,12 +223,6 @@ public class ProdutoService {
 		}
 
 	}
-
-//	public void gerarGrafico(HttpServletResponse reponse) throws IOException {
-//		DefaultPieDataset dataset = new DefaultPieDataset();
-//
-////		List<Relatorio> contagemTipoProduto = produtoRepository.findAll();
-//	}
 
 	@Transactional
 	public void excluir(Integer id) {
