@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.CategoriaSaidaDto;
 import com.example.demo.dtos.ItemPedidoEntradaDto;
 import com.example.demo.dtos.ItemPedidoSaidaDto;
-import com.example.demo.dtos.ProdutoEntradaDto;
 import com.example.demo.service.ItemPedidoService;
 
 import jakarta.validation.Valid;
@@ -32,39 +30,39 @@ import lombok.extern.log4j.Log4j2;
 public class ItemPedidoController {
 	@Autowired
 	private ItemPedidoService itemPedidoService;
-	
+
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@PostMapping
 	public ItemPedidoSaidaDto criar(@Valid @RequestBody ItemPedidoEntradaDto itemPedidoEntradaDto) {
 		log.info("salvar : {}", itemPedidoEntradaDto);
 		return itemPedidoService.criar(itemPedidoEntradaDto);
 	}
-	
+
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@PutMapping("id/{id}")
 	public void editar(@Positive(message = "O ID não pode ser negativo ou zero") @PathVariable Integer id,
-			@Valid @RequestBody ProdutoEntradaDto itemPedidoEntradaDto) {
+			@Valid @RequestBody ItemPedidoEntradaDto itemPedidoEntradaDto) {
 		itemPedidoService.editar(id, itemPedidoEntradaDto);
 	}
-	
+
 	@GetMapping
-	public List<ItemPedidoSaidaDto> pegarTodos(){
+	public List<ItemPedidoSaidaDto> pegarTodos() {
 		return itemPedidoService.pegarTodos();
 	}
-	
+
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@DeleteMapping("id/{id}")
 	public void excluir(@Positive(message = "O ID não pode ser negativo ou zero") @PathVariable Integer id) {
 
 		itemPedidoService.excluir(id);
 	}
-	
+
 	@GetMapping("id/{id}")
 	public ItemPedidoSaidaDto pegarUm(
 			@Positive(message = "O ID não pode ser negativo ou zero") @PathVariable Integer id) {
 		return itemPedidoService.pegarUm(id);
 	}
-	
+
 	@GetMapping("listar/{usuarioId}")
 	public ItemPedidoSaidaDto listarPorUsuario(
 			@Positive(message = "O ID não pode ser negativo ou zero") @PathVariable Integer usuarioId) {

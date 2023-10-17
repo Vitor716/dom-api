@@ -19,8 +19,8 @@ public enum TabelaDeErros {
 	PRODUTO_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Produto não encontrado"),
 	PEDIDO_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Pedido não encontrado"),
 	ITEM_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Item não encontrado"),
-	ERRO_DE_SISTEMA(HttpStatus.INTERNAL_SERVER_ERROR, "Sistema indisponível");
-	
+	ERRO_DE_SISTEMA(HttpStatus.INTERNAL_SERVER_ERROR, "Sistema indisponível"),
+	ID_USUARIO_NAO_PODE_SER_ALTERADO(HttpStatus.PRECONDITION_FAILED, "O Id do usuário não pode ser trocado");
 	
 	private final HttpStatus httpStatus;
 	private final String erro;
