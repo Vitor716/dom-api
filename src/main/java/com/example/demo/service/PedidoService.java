@@ -45,9 +45,13 @@ public class PedidoService {
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
 
+	@Autowired
+	private PedidoValidator pedidoValidator;
+
 	@Transactional
 	public PedidoSaidaDto criar(PedidoEntradaDto pedidoEntradaDto) {
 		try {
+
 			Pedido pedido = mapper.map(pedidoEntradaDto, Pedido.class);
 
 			if (pedidoEntradaDto.getIdUsuario() != null) {
@@ -63,6 +67,14 @@ public class PedidoService {
 			}
 
 			List<ItemPedido> itensPedido = itemPedidoRepository.findAllById(pedidoEntradaDto.getItens());
+
+			for (ItemPedido itemPedido : itensPedido) {
+				if (!itemPedido.getUsuario().getId().equals(pedidoEntradaDto.getIdUsuario())) {
+					throw new ErroDeNegocioException(TabelaDeErros.USUARIO_DIFERENTE_NOS_ITENS);
+
+				}
+			}
+
 			if (itensPedido.size() != pedidoEntradaDto.getItens().size()) {
 				throw new ErroDeNegocioException(TabelaDeErros.ITEM_NAO_ENCONTRADO);
 			}
@@ -108,8 +120,7 @@ public class PedidoService {
 			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
 		}
 	}
-	
-	
+
 	public List<PedidoSaidaDto> pegarTodosFechados() {
 		try {
 			List<Pedido> pedidos = pedidoRepository.findPedidosFechados();
@@ -133,7 +144,7 @@ public class PedidoService {
 			throw new ErroDeNegocioException(TabelaDeErros.ERRO_DE_SISTEMA);
 		}
 	}
-	
+
 	public List<PedidoSaidaDto> pegarTodosAbertos() {
 		try {
 			List<Pedido> pedidos = pedidoRepository.findPedidosAbertos();
@@ -160,15 +171,27 @@ public class PedidoService {
 
 	@Transactional
 	public void excluir(Integer id) {
+
+		pedidoValidator.excluir(id);
+
 		Optional<Pedido> optional = pedidoRepository.findById(id);
 
-		if (!optional.isPresent()) {
+		if (optional.isPresent()) {
+			Pedido pedido = optional.get();
+
+			if (pedido.getStatus() != StatusPedido.FECHADO) {
+				pedido.setStatus(StatusPedido.FECHADO);
+
+				for (ItemPedido itemPedido : pedido.getItens()) {
+					Produto produto = itemPedido.getProduto();
+					int quantidadeItem = itemPedido.getQuantidade();
+					produto.setQuantidade(produto.getQuantidade() + quantidadeItem);
+				}
+				pedidoRepository.save(pedido);
+			}
+		} else {
 			throw new ErroDeNegocioException(TabelaDeErros.PEDIDO_NAO_ENCONTRADO);
 		}
-
-		Pedido registroPedidoBanco = optional.get();
-
-		registroPedidoBanco.setStatus(StatusPedido.FECHADO);
 	}
 
 	@Transactional
