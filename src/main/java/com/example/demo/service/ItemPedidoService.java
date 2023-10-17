@@ -9,13 +9,10 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dtos.CategoriaSaidaDto;
 import com.example.demo.dtos.ItemPedidoEntradaDto;
 import com.example.demo.dtos.ItemPedidoSaidaDto;
-import com.example.demo.dtos.ProdutoEntradaDto;
 import com.example.demo.exception.ErroDeNegocioException;
 import com.example.demo.exception.TabelaDeErros;
-import com.example.demo.model.Categoria;
 import com.example.demo.model.ItemPedido;
 import com.example.demo.model.Produto;
 import com.example.demo.model.Usuario;
@@ -106,34 +103,41 @@ public class ItemPedidoService {
 
 	public void editar(Integer id, ItemPedidoEntradaDto itemPedidoEntradaDto) {
 		try {
-			produtoValidator.editar(id, produtoEntradaDto);
+			Optional<ItemPedido> optionalItemPedido = itemPedidoRepository.findById(id);
 
-			Optional<Produto> optional = produtoRepository.findById(id);
+			ItemPedido itemPedido = optionalItemPedido.get();
 
-			if (!optional.isPresent()) {
-				throw new ErroDeNegocioException(TabelaDeErros.PRODUTO_NAO_ENCONTRADO);
+			if (!itemPedido.getUsuario().getId().equals(itemPedidoEntradaDto.getIdUsuario())) {
+				throw new ErroDeNegocioException(TabelaDeErros.ID_USUARIO_NAO_PODE_SER_ALTERADO);
 			}
 
-			Produto produto = optional.get();
+			if (!optionalItemPedido.isPresent()) {
+				throw new ErroDeNegocioException(TabelaDeErros.ITEM_NAO_ENCONTRADO);
+			}
 
-			if (produtoEntradaDto.getIdCategoria() != null) {
-				Optional<Categoria> optionalCategoria = categoriaRepository
-						.findById(produtoEntradaDto.getIdCategoria());
+			if (itemPedidoEntradaDto.getIdProduto() != null) {
+				Optional<Produto> optionalProduto = produtoRepository.findById(itemPedidoEntradaDto.getIdProduto());
 
-				if (!optionalCategoria.isPresent()) {
-					log.error("editar, categoria não encontrado: id={}", produtoEntradaDto.getIdCategoria());
-					throw new ErroDeNegocioException(TabelaDeErros.CATEGORIA_NAO_ENCONTRADA);
+				if (!optionalProduto.isPresent()) {
+					log.error("editar, produto não encontrado: id={}", itemPedidoEntradaDto.getIdProduto());
+					throw new ErroDeNegocioException(TabelaDeErros.PRODUTO_NAO_ENCONTRADO);
 				}
 
-				Categoria categoria = optionalCategoria.get();
-				produto.setCategoria(categoria);
+				Produto produto = optionalProduto.get();
+				itemPedido.setProduto(produto);
+
+				produto.setQuantidade(produto.getQuantidade() - itemPedidoEntradaDto.getQuantidade());
+
 			}
 
-			mapper.map(produtoEntradaDto, produto);
+			if (itemPedidoEntradaDto.getQuantidade() != null) {
+				itemPedido.setQuantidade(itemPedidoEntradaDto.getQuantidade());
+			}
 
-			log.info("editar, mapeamento: produtoEntradaDto={}, entity={}", produtoEntradaDto, produto);
+			mapper.map(itemPedidoEntradaDto, itemPedido);
 
-			produtoRepository.save(produto);
+			log.info("editar, mapeamento: produtoEntradaDto={}, entity={}", itemPedidoEntradaDto, itemPedido);
+			itemPedidoRepository.save(itemPedido);
 		} catch (ErroDeNegocioException e) {
 			throw e;
 		} catch (Exception e) {
@@ -212,6 +216,15 @@ public class ItemPedidoService {
 	public void excluir(Integer id) {
 		try {
 			itemPedidoValidator.excluir(id);
+
+			Optional<ItemPedido> optionalItemPedido = itemPedidoRepository.findById(id);
+
+			ItemPedido itemPedido = optionalItemPedido.get();
+			Integer itemPedidoQuantidade = itemPedido.getQuantidade();
+			Produto produto = itemPedido.getProduto();
+
+			produto.setQuantidade(produto.getQuantidade() + itemPedidoQuantidade);
+			produtoRepository.save(produto);
 
 			itemPedidoRepository.deleteById(id);
 		} catch (ErroDeNegocioException e) {
