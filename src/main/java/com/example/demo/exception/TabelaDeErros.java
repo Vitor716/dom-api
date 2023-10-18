@@ -21,7 +21,8 @@ public enum TabelaDeErros {
 	ITEM_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Item não encontrado"),
 	ERRO_DE_SISTEMA(HttpStatus.INTERNAL_SERVER_ERROR, "Sistema indisponível"),
 	ID_USUARIO_NAO_PODE_SER_ALTERADO(HttpStatus.PRECONDITION_FAILED, "O Id do usuário não pode ser trocado"),
-	USUARIO_DIFERENTE_NOS_ITENS(HttpStatus.PRECONDITION_FAILED, "Ids usuário diferente");
+	USUARIO_DIFERENTE_NOS_ITENS(HttpStatus.PRECONDITION_FAILED, "Ids usuário diferente"),
+	ERRO_DE_VALIDACAO(HttpStatus.BAD_REQUEST, "Erro de Validação");
 	private final HttpStatus httpStatus;
 	private final String erro;
 }

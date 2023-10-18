@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.demo.dtos.ErroDto;
 import com.example.demo.exception.ErroDeNegocioException;
+import com.example.demo.exception.TabelaDeErros;
 import com.example.demo.model.Erro;
 
 import jakarta.validation.ConstraintViolation;
@@ -38,10 +39,11 @@ public class ErrorController {
 		return ResponseEntity.status(e.getHttpStatus()).body(erroDto);
 	}
 
+	// @Valid -> Classes
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(BindException.class)
 	@ResponseBody
-	public ErroDto handle(BindException exception) {
+	public ResponseEntity<ErroDto> handle(BindException exception) {
 		List<Erro> validacoes = new ArrayList<>();
 
 		for (FieldError error : exception.getBindingResult().getFieldErrors()) {
@@ -49,18 +51,19 @@ public class ErrorController {
 			Erro erro = new Erro(error.getField(), mensagem);
 			validacoes.add(erro);
 		}
-
+		TabelaDeErros tabela = TabelaDeErros.ERRO_DE_VALIDACAO;
 		ErroDto erroDto = new ErroDto();
-		erroDto.setErro(HttpStatus.BAD_REQUEST.name());
+		erroDto.setErro(tabela.getErro());
 		erroDto.setValidacoes(validacoes);
 
-		return erroDto;
+		return ResponseEntity.status(tabela.getHttpStatus()).body(erroDto);
 	}
 
+	// @Validated -> Parametros dos Metodos
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseBody
-	public ErroDto handle(ConstraintViolationException e) {
+	public ResponseEntity<ErroDto> handle(ConstraintViolationException e) {
 		List<Erro> validacoes = new ArrayList<>();
 
 		for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
@@ -68,11 +71,11 @@ public class ErrorController {
 			Erro erro = new Erro(path, violation.getMessage());
 			validacoes.add(erro);
 		}
-
+		TabelaDeErros tabela = TabelaDeErros.ERRO_DE_VALIDACAO;
 		ErroDto erroDto = new ErroDto();
-		erroDto.setErro(HttpStatus.BAD_REQUEST.name());
+		erroDto.setErro(tabela.getErro());
 		erroDto.setValidacoes(validacoes);
 
-		return erroDto;
+		return ResponseEntity.status(tabela.getHttpStatus()).body(erroDto);
 	}
 }
