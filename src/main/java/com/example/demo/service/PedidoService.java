@@ -186,6 +186,7 @@ public class PedidoService {
 					Produto produto = itemPedido.getProduto();
 					int quantidadeItem = itemPedido.getQuantidade();
 					produto.setQuantidade(produto.getQuantidade() + quantidadeItem);
+
 				}
 				pedidoRepository.save(pedido);
 			}
